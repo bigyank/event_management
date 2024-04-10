@@ -4,13 +4,10 @@ import (
 	"context"
 	"kraneapi/graph/model"
 	"kraneapi/pkg/api/dbmodel"
-	"kraneapi/pkg/db"
-
-	"github.com/doug-martin/goqu/v9"
+	service "kraneapi/pkg/api/services"
 )
 
-type UserResolver struct{}
-
+// Implement the AddUser method of the mutationResolver interface
 func AddUser(ctx context.Context, input model.AddUserInput) (*model.User, error) {
 	userModel := dbmodel.User{
 		Name:        input.Name,
@@ -18,15 +15,8 @@ func AddUser(ctx context.Context, input model.AddUserInput) (*model.User, error)
 		PhoneNumber: input.PhoneNumber,
 	}
 
-	// Insert the user into the database using goqu and return the inserted row's data
-	userinsert := db.GetDB().Insert("users").
-		Cols("name", "email", "phone_number").
-		Vals(goqu.Vals{userModel.Name, userModel.Email, userModel.PhoneNumber}).
-		Returning(goqu.C("user_id")).Executor()
-
-	var id string
-
-	if _, err := userinsert.ScanVal(&id); err != nil {
+	id, err := service.AddUser(ctx, userModel)
+	if err != nil {
 		return nil, err
 	}
 
@@ -42,13 +32,11 @@ func AddUser(ctx context.Context, input model.AddUserInput) (*model.User, error)
 }
 
 func GetUsers(ctx context.Context) ([]*model.User, error) {
-	var userModels []*dbmodel.User
-	err := db.GetDB().From("users").Select("*").ScanStructs(&userModels)
+	userModels, err := service.GetUsers(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	// Convert UserModel to User for the response
 	var users []*model.User
 	for _, userModel := range userModels {
 		user := model.User{
@@ -61,17 +49,15 @@ func GetUsers(ctx context.Context) ([]*model.User, error) {
 	}
 
 	return users, nil
+
 }
 
 func GetUserByID(ctx context.Context, input model.UserIDInput) (*model.User, error) {
-	var userModel dbmodel.User
-	_, err := db.GetDB().From("users").Where(goqu.C("user_id").Eq(input.ID)).Select("*").ScanStruct(&userModel)
-
+	userModel, err := service.GetUserByID(ctx, input.ID)
 	if err != nil {
 		return nil, err
 	}
 
-	// Convert UserModel to User for the response
 	user := model.User{
 		UserID:      userModel.UserID,
 		Name:        userModel.Name,
