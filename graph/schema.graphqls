@@ -130,7 +130,7 @@ input UpdateEventSessionInput {
 type Query {
   getUsers: [User!]!
   getUserByID(input: UserIDInput!): User
-  getAllEventSessions: [EventSession!]!
+  getAllEventSessions(eventID: ID!): [EventSession]
   getAllEventExpenses(eventID: ID!): [Expense]
   getEventExpensesBreakdown(eventID: ID!): [ExpenseCategoryBreakdown]
 }
@@ -148,5 +148,5 @@ type Mutation {
   updateEventSession(input: UpdateEventSessionInput!): EventSession!
 
   createExpense(input: CreateExpenseInput!): Expense!
-  updateExpense(input: UpdateExpenseInput!): Expense
+  updateExpense(input: UpdateExpenseInput!): Expense!
 }

@@ -23,8 +23,8 @@ func CreateEventSession(ctx context.Context, input model.CreateEventSessionInput
 	return &eventSession, nil
 }
 
-func GetAllEventSessions(ctx context.Context) ([]*model.EventSession, error) {
-	eventSessions, err := service.GetAllEventSessions(ctx)
+func GetAllEventSessions(ctx context.Context, eventID string) ([]*model.EventSession, error) {
+	eventSessions, err := service.GetAllEventSessions(ctx, eventID)
 	if err != nil {
 		return nil, err
 	}

@@ -66,8 +66,8 @@ func (r *queryResolver) GetUserByID(ctx context.Context, input model.UserIDInput
 }
 
 // GetAllEventSessions is the resolver for the getAllEventSessions field.
-func (r *queryResolver) GetAllEventSessions(ctx context.Context) ([]*model.EventSession, error) {
-	return handler.GetAllEventSessions(ctx)
+func (r *queryResolver) GetAllEventSessions(ctx context.Context, eventID string) ([]*model.EventSession, error) {
+	return handler.GetAllEventSessions(ctx, eventID)
 }
 
 // GetAllEventExpenses is the resolver for the getAllEventExpenses field.

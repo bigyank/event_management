@@ -78,7 +78,7 @@ type Expense struct {
 
 type ExpenseCategoryBreakdown struct {
 	Category  ExpenseCategory `json:"category"`
-	TotalCost float64         `json:"total_cost"`
+	TotalCost float64         `json:"totalCost"`
 }
 
 type Mutation struct {

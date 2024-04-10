@@ -37,9 +37,9 @@ func CreateEventSession(ctx context.Context, input model.CreateEventSessionInput
 }
 
 // GetAllEventSessions retrieves all event sessions from the database.
-func GetAllEventSessions(ctx context.Context) ([]*dbmodel.EventSession, error) {
+func GetAllEventSessions(ctx context.Context, eventID string) ([]*dbmodel.EventSession, error) {
 	var eventSessions []*dbmodel.EventSession
-	err := db.GetDB().From("event_sessions").Select("*").ScanStructs(&eventSessions)
+	err := db.GetDB().From("event_sessions").Where(goqu.C("event_id").Eq(eventID)).Select("*").ScanStructs(&eventSessions)
 	if err != nil {
 		return nil, err
 	}
