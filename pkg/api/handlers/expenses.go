@@ -5,7 +5,7 @@ import (
 	"errors"
 	"kraneapi/graph/model"
 	service "kraneapi/pkg/api/services"
-	"kraneapi/utils"
+	"kraneapi/pkg/utils"
 )
 
 // CreateExpense creates a new expense for an event.

@@ -6,9 +6,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	auth "kraneapi/middleware"
 	"kraneapi/pkg/api/dbmodel"
 	"kraneapi/pkg/db"
+	auth "kraneapi/pkg/middleware"
 
 	"github.com/doug-martin/goqu/v9"
 )

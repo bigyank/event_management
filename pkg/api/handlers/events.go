@@ -5,7 +5,7 @@ import (
 	"errors"
 	"kraneapi/graph/model"
 	service "kraneapi/pkg/api/services"
-	"kraneapi/utils"
+	"kraneapi/pkg/utils"
 )
 
 func CreateEvent(ctx context.Context, input model.AddEventInput) (*model.Event, error) {

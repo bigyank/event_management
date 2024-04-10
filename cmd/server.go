@@ -2,7 +2,7 @@ package main
 
 import (
 	"kraneapi/graph"
-	auth "kraneapi/middleware"
+	auth "kraneapi/pkg/middleware"
 	"log"
 	"net/http"
 	"os"
