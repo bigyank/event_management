@@ -1,0 +1,152 @@
+type User {
+  userID: ID!
+  name: String!
+  email: String!
+  phoneNumber: String!
+}
+
+input UserIDInput {
+  id: String!
+}
+
+input AddUserInput {
+  name: String!
+  email: String!
+  phoneNumber: String!
+}
+
+input AddEventInput {
+  eventName: String!
+  startDate: String!
+  endDate: String!
+  location: String!
+  description: String!
+}
+
+type Event {
+  id: ID!
+  eventName: String!
+  startDate: String!
+  endDate: String!
+  location: String!
+  description: String!
+}
+
+enum Role {
+  ADMIN
+  CONTRIBUTOR
+  ATTENDEE
+}
+
+enum ExpenseCategory {
+  VENUE
+  CATERING
+  DECORATIONS
+  OTHER
+}
+
+input CreateExpenseInput {
+  eventID: ID!
+  itemName: String!
+  cost: Float!
+  description: String!
+  category: ExpenseCategory!
+}
+
+input UpdateExpenseInput {
+  expenseID: ID!
+  eventId: ID!
+  itemName: String!
+  cost: Float!
+  description: String!
+  category: ExpenseCategory!
+}
+
+type ExpenseCategoryBreakdown {
+  category: ExpenseCategory!
+  totalCost: Float!
+}
+
+input CreateEventOrganizerInput {
+  eventID: ID!
+  userID: ID!
+  role: Role!
+}
+
+type EventOrganizer {
+  eventOrganizerID: ID!
+  eventID: ID!
+  userID: ID!
+  role: Role!
+}
+
+type Expense {
+  expenseID: ID!
+  eventID: ID!
+  itemName: String!
+  cost: Float!
+  description: String!
+  category: ExpenseCategory!
+}
+
+input UpdateEventOrganizerInput {
+  eventId: ID!
+  userId: ID!
+  role: Role!
+}
+
+input UpdateEventInput {
+  id: ID!
+  eventName: String!
+  startDate: String!
+  endDate: String!
+  location: String!
+  description: String!
+}
+
+input CreateEventSessionInput {
+  eventID: ID!
+  sessionName: String!
+  startTime: String!
+  endTime: String!
+}
+
+type EventSession {
+  sessionID: ID!
+  eventID: ID!
+  sessionName: String!
+  startTime: String!
+  endTime: String!
+}
+
+input UpdateEventSessionInput {
+  sessionID: ID!
+  eventID: ID!
+  sessionName: String!
+  startTime: String!
+  endTime: String!
+}
+
+type Query {
+  getUsers: [User!]!
+  getUserByID(input: UserIDInput!): User
+  getAllEventSessions: [EventSession!]!
+  getAllEventExpenses(eventID: ID!): [Expense]
+  getEventExpensesBreakdown(eventID: ID!): [ExpenseCategoryBreakdown]
+}
+
+type Mutation {
+  addUser(input: AddUserInput!): User!
+
+  createEvent(input: AddEventInput!): Event!
+  updateEvent(input: UpdateEventInput!): Event!
+
+  createEventOrganizer(input: CreateEventOrganizerInput!): EventOrganizer!
+  updateEventOrganizer(input: UpdateEventOrganizerInput!): EventOrganizer!
+
+  createEventSession(input: CreateEventSessionInput!): EventSession!
+  updateEventSession(input: UpdateEventSessionInput!): EventSession!
+
+  createExpense(input: CreateExpenseInput!): Expense!
+  updateExpense(input: UpdateExpenseInput!): Expense
+}
