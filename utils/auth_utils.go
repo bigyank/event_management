@@ -60,3 +60,63 @@ func GetUserRoleForEvent(ctx context.Context, userID string, eventID string) (st
 
 	return eventOrganizer.Role, nil
 }
+
+// CheckPermission checks if the user has the permission to perform the specified action.
+func CheckPermission(ctx context.Context, eventID string, table string, action string) (bool, error) {
+	// Retrieve the current user's details
+	user, err := GetCurrentUser(ctx)
+	if err != nil {
+		return false, err
+	}
+
+	// Use the user's ID to determine their role for the event
+	role, err := GetUserRoleForEvent(ctx, user.UserID, eventID)
+	if err != nil {
+		return false, err
+	}
+
+	// Check if the user has permission to perform the action
+	canPerform, err := CanPerformAction(ctx, table, action, role)
+	if err != nil {
+		return false, err
+	}
+
+	return canPerform, nil
+}
+
+// canAddRole checks if the current user has permission to add the specified role.
+func CanAddRole(ctx context.Context, eventID string, newUserRole string) (bool, error) {
+
+	// Retrieve the current user's details
+	user, err := GetCurrentUser(ctx)
+	if err != nil {
+		return false, err
+	}
+
+	// Use the user's ID to determine their role for the event
+	role, err := GetUserRoleForEvent(ctx, user.UserID, eventID)
+	if err != nil {
+		return false, err
+	}
+
+	// Define the permissions for adding roles
+	permissions := map[string][]string{
+		"ADMIN":       {"ADMIN", "CONTRIBUTOR", "ATTENDEE"},
+		"CONTRIBUTOR": {"ATTENDEE"},
+	}
+
+	// Check if the current user's role is in the permissions map
+	roles, ok := permissions[role]
+	if !ok {
+		return false, errors.New("invalid current user role")
+	}
+
+	// Check if the new user's role is allowed
+	for _, role := range roles {
+		if role == newUserRole {
+			return true, nil
+		}
+	}
+
+	return false, nil
+}

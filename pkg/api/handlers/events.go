@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"errors"
 	"kraneapi/graph/model"
 	service "kraneapi/pkg/api/services"
 	"kraneapi/utils"
@@ -42,6 +43,15 @@ func CreateEvent(ctx context.Context, input model.AddEventInput) (*model.Event, 
 }
 
 func UpdateEvent(ctx context.Context, input model.UpdateEventInput) (*model.Event, error) {
+	// Check if the user has permission to update the event
+	canUpdate, err := utils.CheckPermission(ctx, input.ID, "events", "update")
+	if err != nil {
+		return nil, err
+	}
+	if !canUpdate {
+		return nil, errors.New("permission denied")
+	}
+
 	id, err := service.UpdateEvent(ctx, input)
 	if err != nil {
 		return nil, err

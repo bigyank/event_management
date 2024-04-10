@@ -2,12 +2,24 @@ package handler
 
 import (
 	"context"
+	"errors"
 	"kraneapi/graph/model"
 	service "kraneapi/pkg/api/services"
+	"kraneapi/utils"
 )
 
 // CreateExpense creates a new expense for an event.
 func CreateExpense(ctx context.Context, input model.CreateExpenseInput) (*model.Expense, error) {
+
+	// Check if the user has permission to add event sessions
+	canAdd, err := utils.CheckPermission(ctx, input.EventID, "expenses", "add")
+	if err != nil {
+		return nil, err
+	}
+	if !canAdd {
+		return nil, errors.New("permission denied")
+	}
+
 	id, err := service.CreateExpense(ctx, input)
 	if err != nil {
 		return nil, err
@@ -25,6 +37,15 @@ func CreateExpense(ctx context.Context, input model.CreateExpenseInput) (*model.
 
 // UpdateExpense updates an existing expense.
 func UpdateExpense(ctx context.Context, input model.UpdateExpenseInput) (*model.Expense, error) {
+
+	canUpdate, err := utils.CheckPermission(ctx, input.EventID, "expenses", "update")
+	if err != nil {
+		return nil, err
+	}
+	if !canUpdate {
+		return nil, errors.New("permission denied")
+	}
+
 	id, err := service.UpdateExpense(ctx, input)
 	if err != nil {
 		return nil, err
@@ -41,6 +62,14 @@ func UpdateExpense(ctx context.Context, input model.UpdateExpenseInput) (*model.
 }
 
 func GetAllEventExpenses(ctx context.Context, eventID string) ([]*model.Expense, error) {
+
+	canView, err := utils.CheckPermission(ctx, eventID, "expenses", "view")
+	if err != nil {
+		return nil, err
+	}
+	if !canView {
+		return nil, errors.New("permission denied")
+	}
 
 	eventExpenses, err := service.GetAllEventExpenses(ctx, eventID)
 	if err != nil {
@@ -64,6 +93,14 @@ func GetAllEventExpenses(ctx context.Context, eventID string) ([]*model.Expense,
 }
 
 func GetEventExpensesBreakdown(ctx context.Context, eventID string) ([]*model.ExpenseCategoryBreakdown, error) {
+
+	canView, err := utils.CheckPermission(ctx, eventID, "expenses", "view")
+	if err != nil {
+		return nil, err
+	}
+	if !canView {
+		return nil, errors.New("permission denied")
+	}
 
 	expenseBreakdowns, err := service.GetEventExpensesBreakdown(ctx, eventID)
 	if err != nil {

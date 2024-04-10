@@ -21,6 +21,48 @@ var permissions = map[string]map[string]map[string]bool{
 			"view": true,
 		},
 	},
+	"events": {
+		"ADMIN": {
+			"update": true,
+			"delete": true,
+			"view":   true,
+		},
+		"CONTRIBUTOR": {
+			"add":  true,
+			"view": true,
+		},
+		"ATTENDEE": {
+			"view": true,
+		},
+	},
+	"event_sessions": {
+		"ADMIN": {
+			"add":    true,
+			"update": true,
+			"delete": true,
+			"view":   true,
+		},
+		"CONTRIBUTOR": {
+			"add":    true,
+			"update": true,
+			"view":   true,
+		},
+		"ATTENDEE": {
+			"view": true,
+		}},
+	"expenses": {
+		"ADMIN": {
+			"add":    true,
+			"update": true,
+			"delete": true,
+			"view":   true,
+		},
+		"CONTRIBUTOR": {
+			"view": true,
+		},
+		"ATTENDEE": {
+			"view": false,
+		}},
 }
 
 func CanPerformAction(ctx context.Context, table string, action string, role string) (bool, error) {
@@ -30,7 +72,6 @@ func CanPerformAction(ctx context.Context, table string, action string, role str
 	if !ok {
 		return false, errors.New("invalid table")
 	}
-
 	// Access the permissions for the specific role
 	permissionsForRole, ok := permissionsForTable[role]
 	if !ok {
