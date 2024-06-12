@@ -6,7 +6,7 @@ require (
 	github.com/99designs/gqlgen v0.17.45
 	github.com/doug-martin/goqu/v9 v9.19.0
 	github.com/lib/pq v1.10.9
-	github.com/vektah/gqlparser/v2 v2.5.11
+	github.com/vektah/gqlparser/v2 v2.5.14
 )
 
 require (
